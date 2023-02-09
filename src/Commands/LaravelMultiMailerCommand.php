@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Adrashyawarrior\LaravelMultiMailer\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class LaravelMultiMailerCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'laravel-multi-mailer';
 
     public $description = 'My command';
 
