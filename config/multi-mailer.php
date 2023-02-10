@@ -2,6 +2,8 @@
 
 // config for Adrashyawarrior/LaravelMultiMailer
 return [
+    'MAILERS' => explode(',', env('MAILERS', '')),
+    
     'MAILGUN_API_KEY' => env('MAILGUN_API_KEY'),
     'MAILGUN_HOSTNAME' => env('MAILGUN_HOSTNAME', 'smtp.mailgun.org'),
     'MAILGUN_DOMAIN' => env('MAILGUN_DOMAIN'),

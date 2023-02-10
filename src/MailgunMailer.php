@@ -41,6 +41,33 @@ class MailgunMailer
 
     public function send()
     {
+        if(!config('multi-mailer.MAILGUN_API_KEY')){
+            return [
+                'success' => false,
+                'mailer' => 'mailgun',
+                'message' => 'MAILGUN_API_KEY is not set.',
+                'details' => 'NA'
+            ];
+        }
+
+        if(!config('multi-mailer.MAILGUN_HOSTNAME')){
+            return [
+                'success' => false,
+                'mailer' => 'mailgun',
+                'message' => 'MAILGUN_HOSTNAME is not set.',
+                'details' => 'NA'
+            ];
+        }
+
+        if(!config('multi-mailer.MAILGUN_DOMAIN')){
+            return [
+                'success' => false,
+                'mailer' => 'mailgun',
+                'message' => 'MAILGUN_DOMAIN is not set.',
+                'details' => 'NA'
+            ];
+        }
+
         $from = $this->fromEmail;
         if ($this->fromName) $from = $this->fromName . ' <' . $this->fromEmail . '>';
         $mgClient = Mailgun::create(config('multi-mailer.MAILGUN_API_KEY'), config('multi-mailer.MAILGUN_HOSTNAME'));

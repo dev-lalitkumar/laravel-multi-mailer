@@ -44,6 +44,14 @@ class LaravelMultiMailer
     public function send()
     {
         $mailers = config('multi-mailer.MAILERS');
+        if(!$mailers || !is_array($mailers)){
+            return [
+                'success' => false,
+                'mailer' => 'NA',
+                'message' => 'MAILERS is not set.',
+                'details' => 'NA'
+            ];
+        }
         $response = null;
         foreach ($mailers as $mailer) {
             switch ($mailer) {
@@ -60,7 +68,7 @@ class LaravelMultiMailer
         }
         return [
             'success' => false,
-            'mailer' => 'all',
+            'mailer' => 'NA',
             'message' => 'Email failed sending through all mailers.',
             'details' => 'NA'
         ];

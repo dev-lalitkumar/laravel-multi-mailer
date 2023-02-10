@@ -44,6 +44,15 @@ class SendinblueMailer
 
     public function send()
     {
+        if(!config('multi-mailer.SENDINBLUE_API_KEY')){
+            return [
+                'success' => false,
+                'mailer' => 'sendinblue',
+                'message' => 'SENDINBLUE_API_KEY is not set.',
+                'details' => 'NA'
+            ];
+        }
+
         $from = ['email' => $this->fromEmail];
         if ($this->fromName) $from['name'] = $this->fromName;
 
