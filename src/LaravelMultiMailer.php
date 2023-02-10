@@ -2,6 +2,8 @@
 
 namespace Adrashyawarrior\LaravelMultiMailer;
 
+use Illuminate\Support\Facades\Log;
+
 class LaravelMultiMailer
 {
     protected $mailgun;
@@ -44,7 +46,7 @@ class LaravelMultiMailer
     public function send()
     {
         $mailers = config('multi-mailer.MAILERS');
-        if(!$mailers || !is_array($mailers)){
+        if (!$mailers || !is_array($mailers)) {
             return [
                 'success' => false,
                 'mailer' => 'NA',
@@ -62,8 +64,18 @@ class LaravelMultiMailer
                     $response = $this->sendinblue->send();
                     break;
             }
-            if ($response && $response['success']) {
-                return $this->mailgun->send();
+            if (!$response) {
+                return [
+                    'success' => false,
+                    'mailer' => $mailer,
+                    'message' => 'No Response.',
+                    'details' => 'NA'
+                ];
+            }
+            if ($response['success']) {
+                return $response;
+            } else {
+                Log::info($response);
             }
         }
         return [
