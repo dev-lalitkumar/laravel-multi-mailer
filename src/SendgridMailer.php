@@ -74,9 +74,15 @@ class SendgridMailer
         $email = new Mail();
         $email->setFrom($this->fromEmail, $this->fromName);
         $email->setSubject($this->subject);
-        $email->addTos($this->to);
-        if (count($this->cc) > 0) $email->addCcs($this->cc);
-        if (count($this->bcc) > 0) $email->addBccs($this->bcc);
+        foreach($this->to as $to){
+            $email->addTo($to);
+        }
+        foreach($this->cc as $cc){
+            $email->addCc($cc);
+        }
+        foreach($this->bcc as $bcc){
+            $email->addBcc($bcc);
+        }
         if ($this->text) $email->addContent("text/plain", $this->text);
         if ($this->html) $email->addContent("text/html", $this->html);
         $sendgrid = new SendGrid(config('multi-mailer.SENDGRID_API_KEY'));
