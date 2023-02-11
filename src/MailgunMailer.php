@@ -11,7 +11,10 @@ class MailgunMailer
     protected $fromName = null;
     protected $subject = null;
     protected $text = null;
+    protected $html = null;
     protected $to = [];
+    protected $cc = [];
+    protected $bcc = [];
 
 
     public function from($fromEmail, $fromName = null)
@@ -27,6 +30,18 @@ class MailgunMailer
         return $this;
     }
 
+    public function cc($cc)
+    {
+        $this->cc = $cc;
+        return $this;
+    }
+
+    public function bcc($bcc)
+    {
+        $this->bcc = $bcc;
+        return $this;
+    }
+
     public function subject($subject)
     {
         $this->subject = $subject;
@@ -39,9 +54,15 @@ class MailgunMailer
         return $this;
     }
 
+    public function html($html)
+    {
+        $this->html = $html;
+        return $this;
+    }
+
     public function send()
     {
-        if(!config('multi-mailer.MAILGUN_API_KEY')){
+        if (!config('multi-mailer.MAILGUN_API_KEY')) {
             return [
                 'success' => false,
                 'mailer' => 'mailgun',
@@ -50,7 +71,7 @@ class MailgunMailer
             ];
         }
 
-        if(!config('multi-mailer.MAILGUN_HOSTNAME')){
+        if (!config('multi-mailer.MAILGUN_HOSTNAME')) {
             return [
                 'success' => false,
                 'mailer' => 'mailgun',
@@ -59,7 +80,7 @@ class MailgunMailer
             ];
         }
 
-        if(!config('multi-mailer.MAILGUN_DOMAIN')){
+        if (!config('multi-mailer.MAILGUN_DOMAIN')) {
             return [
                 'success' => false,
                 'mailer' => 'mailgun',
@@ -72,12 +93,14 @@ class MailgunMailer
         if ($this->fromName) $from = $this->fromName . ' <' . $this->fromEmail . '>';
         $mgClient = Mailgun::create(config('multi-mailer.MAILGUN_API_KEY'), config('multi-mailer.MAILGUN_HOSTNAME'));
         $domain = config('multi-mailer.MAILGUN_DOMAIN');
-        $params = array(
-            'from'    => $from,
-            'to'      => implode(',', $this->to),
-            'subject' => $this->subject,
-            'text'    => $this->text
-        );
+        $params = [];
+        $params['from'] = $from;
+        $params['to'] = implode(',', $this->to);
+        if ($this->cc) $params['cc'] = implode(',', $this->cc);
+        if ($this->bcc) $params['bcc'] = implode(',', $this->bcc);
+        $params['subject'] = $this->subject;
+        if ($this->text) $params['text'] = $this->text;
+        if ($this->html) $params['html'] = $this->html;
 
         try {
             # Make the call to the client.

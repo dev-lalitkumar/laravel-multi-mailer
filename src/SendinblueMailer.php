@@ -14,7 +14,10 @@ class SendinblueMailer
     protected $fromName = null;
     protected $subject = null;
     protected $text = null;
+    protected $html = null;
     protected $to = [];
+    protected $cc = [];
+    protected $bcc = [];
 
 
     public function from($fromEmail, $fromName = null)
@@ -30,6 +33,18 @@ class SendinblueMailer
         return $this;
     }
 
+    public function cc($cc)
+    {
+        $this->cc = $cc;
+        return $this;
+    }
+
+    public function bcc($bcc)
+    {
+        $this->bcc = $bcc;
+        return $this;
+    }
+
     public function subject($subject)
     {
         $this->subject = $subject;
@@ -42,9 +57,15 @@ class SendinblueMailer
         return $this;
     }
 
+    public function html($html)
+    {
+        $this->html = $html;
+        return $this;
+    }
+
     public function send()
     {
-        if(!config('multi-mailer.SENDINBLUE_API_KEY')){
+        if (!config('multi-mailer.SENDINBLUE_API_KEY')) {
             return [
                 'success' => false,
                 'mailer' => 'sendinblue',
@@ -61,14 +82,27 @@ class SendinblueMailer
             $to[] = ['email' => $email];
         }
 
+        $cc = [];
+        foreach ($this->cc as $email) {
+            $cc[] = ['email' => $email];
+        }
+
+        $bcc = [];
+        foreach ($this->bcc as $email) {
+            $bcc[] = ['email' => $email];
+        }
+
         $config = Configuration::getDefaultConfiguration()->setApiKey('api-key', config('multi-mailer.SENDINBLUE_API_KEY'));
         $apiInstance = new TransactionalEmailsApi(new Client(), $config);
-        $sendSmtpEmail = new SendSmtpEmail([
-            'subject' => $this->subject,
-            'sender' => $from,
-            'to' => $to,
-            'textContent' => $this->text
-        ]);
+        $params = [];
+        $params['subject'] = $this->subject;
+        $params['sender'] = $from;
+        $params['to'] = $to;
+        if ($cc) $params['cc'] = $cc;
+        if ($bcc) $params['bcc'] = $bcc;
+        if ($this->text) $params['textContent'] = $this->text;
+        if ($this->html) $params['htmlContent'] = $this->html;
+        $sendSmtpEmail = new SendSmtpEmail($params);
 
         try {
             $response = $apiInstance->sendTransacEmail($sendSmtpEmail);

@@ -12,7 +12,10 @@ class SendgridMailer
     protected $fromName = null;
     protected $subject = null;
     protected $text = null;
+    protected $html = null;
     protected $to = [];
+    protected $cc = [];
+    protected $bcc = [];
 
     public function from($fromEmail, $fromName = null)
     {
@@ -27,6 +30,18 @@ class SendgridMailer
         return $this;
     }
 
+    public function cc($cc)
+    {
+        $this->cc = $cc;
+        return $this;
+    }
+
+    public function bcc($bcc)
+    {
+        $this->bcc = $bcc;
+        return $this;
+    }
+
     public function subject($subject)
     {
         $this->subject = $subject;
@@ -36,6 +51,12 @@ class SendgridMailer
     public function text($text)
     {
         $this->text = $text;
+        return $this;
+    }
+
+    public function html($html)
+    {
+        $this->html = $html;
         return $this;
     }
 
@@ -53,14 +74,11 @@ class SendgridMailer
         $email = new Mail();
         $email->setFrom($this->fromEmail, $this->fromName);
         $email->setSubject($this->subject);
-        foreach($this->to as $to){
-            $email->addTo($to);
-        }
-        $email->addContent("text/plain", $this->text);
-        // $email->addContent(
-        //     "text/html",
-        //     "<strong>and easy to do anywhere, even with PHP</strong>"
-        // );
+        $email->addTos($this->to);
+        if (count($this->cc) > 0) $email->addCcs($this->cc);
+        if (count($this->bcc) > 0) $email->addBccs($this->bcc);
+        if ($this->text) $email->addContent("text/plain", $this->text);
+        if ($this->html) $email->addContent("text/html", $this->html);
         $sendgrid = new SendGrid(config('multi-mailer.SENDGRID_API_KEY'));
         try {
             $response = $sendgrid->send($email);

@@ -33,6 +33,22 @@ class LaravelMultiMailer
         return $this;
     }
 
+    public function cc($cc)
+    {
+        $this->mailgun->cc($cc);
+        $this->sendinblue->cc($cc);
+        $this->sendgrid->cc($cc);
+        return $this;
+    }
+
+    public function bcc($bcc)
+    {
+        $this->mailgun->bcc($bcc);
+        $this->sendinblue->bcc($bcc);
+        $this->sendgrid->bcc($bcc);
+        return $this;
+    }
+
     public function subject($subject)
     {
         $this->mailgun->subject($subject);
@@ -46,6 +62,14 @@ class LaravelMultiMailer
         $this->mailgun->text($text);
         $this->sendinblue->text($text);
         $this->sendgrid->text($text);
+        return $this;
+    }
+
+    public function html($html)
+    {
+        $this->mailgun->html($html);
+        $this->sendinblue->html($html);
+        $this->sendgrid->html($html);
         return $this;
     }
 
