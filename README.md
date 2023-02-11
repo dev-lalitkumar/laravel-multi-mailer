@@ -1,84 +1,90 @@
-# This package allows laravel project to integrate multiple mail providers on priority bases.
+# AdrashyaWarrior Laravel Multi-Mailer
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/adrashyawarrior/laravel-multi-mailer.svg?style=flat-square)](https://packagist.org/packages/adrashyawarrior/laravel-multi-mailer)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/adrashyawarrior/laravel-multi-mailer/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/adrashyawarrior/laravel-multi-mailer/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/adrashyawarrior/laravel-multi-mailer/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/adrashyawarrior/laravel-multi-mailer/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/adrashyawarrior/laravel-multi-mailer.svg?style=flat-square)](https://packagist.org/packages/adrashyawarrior/laravel-multi-mailer)
+AdrashyaWarrior Laravel Multi-Mailer is a package built on top of mailgun, sendinblue & sendgrid email providers.
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+## STEP(1): Installation
 
-## Support us
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/laravel-multi-mailer.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/laravel-multi-mailer)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
-
-## Installation
-
-You can install the package via composer:
+Go to your project's root directory and run
 
 ```bash
 composer require adrashyawarrior/laravel-multi-mailer
 ```
 
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --tag="laravel-multi-mailer-migrations"
-php artisan migrate
+## STEP(2): Update .env
+Add the following environment varables
+```env
+# priority
+MAILERS=sendgrid,mailgun,sendinblue
+# Mailgun
+MAILGUN_API_KEY=''
+MAILGUN_HOSTNAME=''
+MAILGUN_DOMAIN=''
+# Sendinblue
+SENDINBLUE_API_KEY=''
+# Sendgrid
+SENDGRID_API_KEY=''
 ```
 
-You can publish the config file with:
-
-```bash
-php artisan vendor:publish --tag="laravel-multi-mailer-config"
-```
-
-This is the contents of the published config file:
+## STEP(3): Usage
+Inside your controller
 
 ```php
-return [
-];
+<?php
+
+namespace App\Http\Controllers;
+
+use Adrashyawarrior\LaravelMultiMailer\LaravelMultiMailer;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Log;
+
+class Controller extends BaseController
+{
+    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    public function sendmail()
+    {
+        try {
+            $mailer = new LaravelMultiMailer();
+            $mailer->from('shiva@gmail.com', 'Shaiva Sh');
+            $mailer->to(['krishna@gmail.com']);
+            $mailer->cc(['radha@gmail.com']);
+            $mailer->bcc(['sudama@gmail.com']);
+            $mailer->subject('Testing New Package');
+            $mailer->html('<!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Document</title>
+            </head>
+            <body>
+                <h1>This is a testing mail.</h1>
+            </body>
+            </html>');
+            $response = $mailer->send();
+            return response()->json($response);
+        } catch (\Exception $e) {
+            Log::info($e->getMessage());
+            return response('Error');
+        }
+    }
+}
+
 ```
 
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag="laravel-multi-mailer-views"
-```
-
-## Usage
-
-```php
-$laravelMultiMailer = new Adrashyawarrior\LaravelMultiMailer();
-echo $laravelMultiMailer->echoPhrase('Hello, Adrashyawarrior!');
-```
-
-## Testing
-
-```bash
-composer test
-```
-
-## Changelog
-
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+## Congrats! Done.
+You are all set to send emails.
 
 ## Contributing
 
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
-
-## Security Vulnerabilities
-
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
-
-## Credits
-
-- [Lalit Kumar](https://github.com/adrashyawarrior)
-- [All Contributors](../../contributors)
+Pull requests are welcome. For major changes, please open an issue first
+to discuss what you would like to change.
 
 ## License
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+[MIT](https://choosealicense.com/licenses/mit/)
+
