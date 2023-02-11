@@ -8,5 +8,7 @@ return [
     'MAILGUN_HOSTNAME' => env('MAILGUN_HOSTNAME', 'smtp.mailgun.org'),
     'MAILGUN_DOMAIN' => env('MAILGUN_DOMAIN'),
 
-    'SENDINBLUE_API_KEY' => env('SENDINBLUE_API_KEY')
+    'SENDINBLUE_API_KEY' => env('SENDINBLUE_API_KEY'),
+
+    'SENDGRID_API_KEY' => env('SENDGRID_API_KEY')
 ];

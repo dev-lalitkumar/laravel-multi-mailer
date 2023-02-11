@@ -8,17 +8,20 @@ class LaravelMultiMailer
 {
     protected $mailgun;
     protected $sendinblue;
+    protected $sendgrid;
 
     public function __construct()
     {
         $this->mailgun = new MailgunMailer();
         $this->sendinblue = new SendinblueMailer();
+        $this->sendgrid = new SendgridMailer();
     }
 
     public function from($fromEmail, $fromName = null)
     {
         $this->mailgun->from($fromEmail, $fromName);
         $this->sendinblue->from($fromEmail, $fromName);
+        $this->sendgrid->from($fromEmail, $fromName);
         return $this;
     }
 
@@ -26,6 +29,7 @@ class LaravelMultiMailer
     {
         $this->mailgun->to($to);
         $this->sendinblue->to($to);
+        $this->sendgrid->to($to);
         return $this;
     }
 
@@ -33,6 +37,7 @@ class LaravelMultiMailer
     {
         $this->mailgun->subject($subject);
         $this->sendinblue->subject($subject);
+        $this->sendgrid->subject($subject);
         return $this;
     }
 
@@ -40,6 +45,7 @@ class LaravelMultiMailer
     {
         $this->mailgun->text($text);
         $this->sendinblue->text($text);
+        $this->sendgrid->text($text);
         return $this;
     }
 
@@ -62,6 +68,9 @@ class LaravelMultiMailer
                     break;
                 case 'sendinblue':
                     $response = $this->sendinblue->send();
+                    break;
+                case 'sendgrid':
+                    $response = $this->sendgrid->send();
                     break;
             }
             if (!$response) {
